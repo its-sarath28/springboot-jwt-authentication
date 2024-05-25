@@ -1,5 +1,6 @@
 package com.example.springJWT.Service;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +33,10 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse register(User request) {
+        if (repository.findByUsername(request.getUsername()).isPresent()) {
+            throw new DuplicateKeyException("Username already exists");
+        }
+
         User user = new User();
 
         user.setFirst_name(request.getFirst_name());
